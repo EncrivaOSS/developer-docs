@@ -1,0 +1,94 @@
+---
+title: Feedback
+description: This plugin provides feedback collection and management for your Better Auth application. By default, authentication is required to submit feedback, but this can be configured.
+---
+import { TypeTable } from 'fumadocs-ui/components/type-table';
+
+## Installation
+
+```ts
+import { feedback, feedbackClient } from "@encriva/better-auth-enchanced";
+```
+
+To use this plugin in your application, you need to register it in both client and server configurations.
+
+### Initialize plugin
+
+```ts title="auth.ts"
+export const auth = betterAuth({
+  plugins: [
+    feedback({
+      authRequired: true,
+      adminRoles: ["admin"]
+    })
+  ]
+});
+```
+
+```ts title="auth-client.ts"
+const authClient = createAuthClient({
+  plugins: [
+    feedbackClient()
+  ]
+});
+```
+
+## Usage
+
+To submit feedback on the client side:
+
+```tsx
+// To submit feedback
+authClient.feedback.submit({
+  response: "Test",
+  location: "/"
+});
+```
+
+To submit feedback on the server side:
+
+```ts
+// Use auth.api.submitFeedback() function to submit feedback from the server
+```
+
+## API
+
+<TypeTable
+  type={{
+    enabled: {
+      description: 'Enable/disable the feedback system',
+      type: 'boolean',
+      default: 'true',
+    },
+    authRequired: {
+      description: 'Is authentication required for feedback',
+      type: 'boolean',
+      default: 'true',
+    },
+    adminRoles: {
+      description: 'Which roles can access feedbacks',
+      type: 'string[]',
+      default: '[]',
+    },
+    schema: {
+      description: 'Custom schema configuration',
+      type: 'Record<string, any>',
+      default: '-',
+    },
+    onSubmit: {
+      description: 'Function to run when feedback is submitted',
+      type: '(feedback: Feedback) => Promise<void>',
+      default: '-',
+    },
+  }}
+/>
+
+## Error Codes
+
+| Code | Description |
+| --- | -------- |
+| `FEEDBACK_NOT_FOUND` | Feedback not found |
+| `SYSTEM_DISABLED` | Feedback system is currently disabled |
+| `UNAUTHORIZED` | You must be logged in to view feedbacks |
+| `UNAUTHORIZED_SUBMIT` | You must be logged in to submit feedback |
+| `ADMIN_REQUIRED` | You must be an admin to perform this action | 

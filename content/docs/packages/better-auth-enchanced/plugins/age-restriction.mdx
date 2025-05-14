@@ -1,0 +1,95 @@
+---
+title: Age Restriction
+description: This plugin provides age verification and restriction features for Better Auth applications. It allows you to add age-based access restrictions to specific content or services.
+---
+import { TypeTable } from 'fumadocs-ui/components/type-table';
+
+## Installation
+
+```ts
+import { ageRestriction, ageRestrictionClient } from "@encriva/better-auth-enchanced";
+```
+
+To use this plugin in your application, you need to register it in both client and server configurations.
+
+### Initialize plugin
+
+```ts title="auth.ts"
+export const auth = betterAuth({
+  plugins: [
+    ageRestriction()
+  ]
+});
+```
+
+```ts title="auth-client.ts"
+const authClient = createAuthClient({
+  plugins: [
+    ageRestrictionClient()
+  ]
+});
+```
+
+## Usage
+
+To verify age:
+
+```tsx
+authClient.ageRestriction.verify({
+  birthdate: "1990-01-01"
+});
+```
+
+To check age status:
+
+```tsx
+authClient.ageRestriction.status();
+```
+
+## API
+
+<TypeTable
+  type={{
+    enabled: {
+      description: 'Enable/disable the age restriction system',
+      type: 'boolean',
+      default: 'true',
+    },
+    minimumAge: {
+      description: 'Minimum age requirement',
+      type: 'number',
+      default: '18',
+    },
+    requireOnSignUp: {
+      description: 'Require age verification during sign-up',
+      type: 'boolean',
+      default: 'false',
+    },
+    verificationMethods: {
+      description: 'Available verification methods',
+      type: 'string[]',
+      default: '["birthdate"]',
+    },
+    reverificationPeriod: {
+      description: 'Number of days until re-verification is required',
+      type: 'number',
+      default: '365',
+    },
+    schema: {
+      description: 'Custom schema configuration',
+      type: 'Record<string, any>',
+      default: '-',
+    },
+  }}
+/>
+
+## Error Codes
+
+| Code | Description |
+| --- | -------- |
+| `AGE_VERIFICATION_REQUIRED` | Age verification is required |
+| `MINIMUM_AGE_REQUIRED` | You need to meet the minimum age requirement |
+| `BIRTHDATE_REQUIRED` | Birthdate information is required |
+| `INVALID_BIRTHDATE` | Invalid birthdate |
+| `VERIFICATION_FAILED` | Age verification failed |
+| `SYSTEM_DISABLED` | Age restriction system is currently disabled |

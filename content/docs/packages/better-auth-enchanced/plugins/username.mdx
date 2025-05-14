@@ -1,0 +1,94 @@
+---
+title: Username
+description: This plugin provides advanced username validation and management for Better Auth. It allows users to sign in with a username and password and adds strong validation rules.
+---
+import { TypeTable } from 'fumadocs-ui/components/type-table';
+
+## Installation
+
+```ts
+import { username, usernameClient } from "@encriva/better-auth-enchanced";
+```
+
+To use this plugin in your application, you need to register it in both client and server configurations.
+
+### Initialize plugin
+
+```ts title="auth.ts"
+export const auth = betterAuth({
+  plugins: [
+    username()
+  ]
+});
+```
+
+```ts title="auth-client.ts"
+const authClient = createAuthClient({
+  plugins: [
+    usernameClient()
+  ]
+});
+```
+
+## Usage
+
+To sign in with username:
+
+```ts
+authClient.signIn.username({
+  username: "clqu",
+  password: "1234567890"
+});
+```
+
+To update username:
+
+```tsx
+// To update username
+authClient.updateUser({
+  username: (document.getElementById("username") as HTMLInputElement).value
+});
+```
+
+## API
+
+<TypeTable
+  type={{
+    minUsernameLength: {
+      description: 'Minimum username length',
+      type: 'number',
+      default: '3',
+    },
+    maxUsernameLength: {
+      description: 'Maximum username length',
+      type: 'number',
+      default: '30',
+    },
+    validator: {
+      description: 'Custom validation function',
+      type: '(username: string) => boolean | Promise<boolean>',
+      default: '/^[a-zA-Z0-9_.]+$/',
+    },
+    transform: {
+      description: 'Text transformation function',
+      type: '(username: string) => string',
+      default: '(username) => username',
+    },
+    schema: {
+      description: 'Custom schema configuration',
+      type: 'Record<string, any>',
+      default: '-',
+    },
+  }}
+/>
+
+## Error Codes
+
+| Code | Description |
+| --- | -------- |
+| `INVALID_USERNAME_OR_PASSWORD` | Invalid username or password |
+| `USERNAME_TOO_SHORT` | Username is too short |
+| `USERNAME_TOO_LONG` | Username is too long |
+| `INVALID_USERNAME` | Invalid username format |
+| `USERNAME_IS_ALREADY_TAKEN` | Username is already taken |
+| `EMAIL_NOT_VERIFIED` | Email address is not verified |

@@ -1,0 +1,207 @@
+---
+title: Env-Sync
+description: Encrypted environment variables synchronization tool with database support.
+---
+
+import { Tab, Tabs } from 'fumadocs-ui/components/tabs';
+import { Cards, Card } from 'fumadocs-ui/components/card';
+import { Steps, Step } from 'fumadocs-ui/components/steps';
+
+## Installation
+
+<p>Install the Env-Sync package with your preferred package manager:</p>
+
+<Tabs items={['npm', 'yarn', 'pnpm', 'bun']} groupId="package-manager">
+  <Tab value="npm">
+  ```bash
+  npm install @encriva/env-sync
+  ```
+  </Tab>
+  <Tab value="yarn">
+  ```bash
+  yarn add @encriva/env-sync
+  ```
+  </Tab>
+  <Tab value="pnpm">
+  ```bash
+  pnpm add @encriva/env-sync
+  ```
+  </Tab>
+  <Tab value="bun">
+  ```bash
+  bun add @encriva/env-sync
+  ```
+  </Tab>
+</Tabs>
+
+## Quick Start
+
+```bash
+# Synchronize environment variables when starting your application
+env-sync npm start
+
+# Using custom secret key and database URL
+env-sync --secret=secret_key --adapter-url=mongodb://localhost:27017 npm run dev
+```
+
+## Features
+
+<Cards>
+  <Card title="Encryption and Security" icon="🔒">
+    Securely encrypts sensitive environment variables using AES-256
+  </Card>
+  <Card title="Database Support" icon="📦">
+    Stores and synchronizes environment variables in MongoDB database
+  </Card>
+  <Card title="Easy Integration" icon="🔄">
+    Automatically updates the `.env` file when starting your application
+  </Card>
+  <Card title="Key Management" icon="🔑">
+    Encryption key can be stored in configuration file or environment variable
+  </Card>
+</Cards>
+
+## Usage Guide
+
+### CLI Tool
+
+Env-Sync provides a command line interface (CLI):
+
+```bash
+# Basic usage
+env-sync [options] <command> [arguments]
+
+# Options
+--secret=KEY           # Encryption key
+--adapter-url=URL      # MongoDB connection URL
+
+# Example
+env-sync --secret=secret_key npm start
+```
+
+### Configuration Methods
+
+<Tabs items={['Environment Variables (Recommended)', 'package.json', 'Configuration File']} groupId="config-method">
+  <Tab value="Environment Variables (Recommended)">
+  ```bash
+  # Configuration with environment variables
+  ENVSYNC_SECRET_KEY=secret_key
+  ENVSYNC_ADAPTER_URL=mongodb://localhost:27017
+  ```
+  </Tab>
+  <Tab value="package.json">
+  ```json
+  {
+    "name": "application-name",
+    "version": "1.0.0",
+    "envSyncOptions": {
+      "secret": "secret_key",
+      "adapterURL": "mongodb://localhost:27017"
+    }
+  }
+  ```
+  </Tab>
+  <Tab value="Configuration File">
+  ```json
+  // env-sync.options.json file (in project root directory)
+  {
+    "secret": "secret_key",
+    "adapterURL": "mongodb://localhost:27017"
+  }
+  ```
+  </Tab>
+</Tabs>
+
+### Programmatic Usage
+
+```javascript
+import { Storage } from '@encriva/env-sync';
+
+// Create storage object
+const storage = new Storage('secret_key', 'mongodb://localhost:27017');
+
+// Add value
+await storage.set('API_KEY', 'abcdef123456');
+
+// Read value
+const apiKey = await storage.get('API_KEY');
+console.log(apiKey); // 'abcdef123456'
+
+// Get all values
+const allValues = await storage.getAll();
+
+// Delete value
+await storage.delete('OLD_VARIABLE');
+```
+
+## Technical Details
+
+### Encryption Mechanism
+
+<Steps>
+  <Step>
+    Encryption key is processed with SHA-256 (creates a 32-byte key)
+  </Step>
+  <Step>
+    A random Initialization Vector (IV) is created for each value
+  </Step>
+  <Step>
+    IV and encrypted value are stored together
+  </Step>
+  <Step>
+    During decryption, the same key and IV are used to obtain the original value
+  </Step>
+</Steps>
+
+### Database Schema
+
+Data stored in MongoDB has the following structure:
+
+```javascript
+{
+  "key": "API_KEY",           // Environment variable name
+  "value": "iv:encrypted"     // Encrypted value
+}
+```
+
+### Operation Logic
+
+<Steps>
+  <Step>
+    When the CLI tool is run, it fetches encrypted values from the database
+  </Step>
+  <Step>
+    Values are made readable through decryption
+  </Step>
+  <Step>
+    The existing `.env` file is read and merged with values from the database
+  </Step>
+  <Step>
+    The updated `.env` file is saved
+  </Step>
+  <Step>
+    The requested command (npm start, bun run dev, etc.) is executed
+  </Step>
+</Steps>
+
+## Security Measures
+
+<Cards>
+  <Card title="Secret Key" icon="🔐">
+    Keep your encryption key secure, as all values can be decrypted with it
+  </Card>
+  <Card title="Git Security" icon="🔄">
+    Add your .env file and configuration files containing secret keys to your .gitignore file
+  </Card>
+  <Card title="Production" icon="🚀">
+    Use a different secret key in production environment
+  </Card>
+</Cards>
+
+## Troubleshooting
+
+The CLI output provides detailed information when you encounter issues. Most common errors:
+
+- Cannot connect to the database
+- Incorrect encryption key usage
+- `.env` file write permissions

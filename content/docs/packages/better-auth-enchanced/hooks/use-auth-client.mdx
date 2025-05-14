@@ -1,0 +1,18 @@
+---
+title: useAuthClient
+description: This hook provides advanced authentication management for Better Auth. It allows you to manage your authentication and send emails to users.
+soon: true
+---
+
+## Not implemented yet
+
+This plugin is not implemented yet. It will be available in the next version of Better Auth Enhanced.
+
+## Planned Usage
+
+```ts
+const { loading, error, run } = useAuthClient(authClient => authClient.signIn.email, {
+	onSuccess: () => alert("success"),
+	onError: (error) => console.error(error)
+});
+```

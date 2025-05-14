@@ -1,0 +1,13 @@
+{
+	"title": "Encriva for Developers",
+	"description": "Encriva for Developers",
+	"icon": "Building",
+	"root": true,
+	"pages": [
+		"---Introduction---",
+		"index",
+		"---Packages---",
+		"packages/better-auth-enchanced",
+		"packages/env-sync"
+	]
+}
