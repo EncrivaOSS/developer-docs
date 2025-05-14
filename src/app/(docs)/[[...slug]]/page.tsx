@@ -58,7 +58,7 @@ export async function generateMetadata(props: {
 	if (!page) notFound();
 
 	const image = {
-		url: ['/og', ...(params.slug || [])].join('/'),
+		url: ['https://developers.encriva.com/og', ...(params.slug || [])].join('/'),
 		width: 1200,
 		height: 630,
 	};
